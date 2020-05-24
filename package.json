@@ -4,6 +4,7 @@
   "description": "My personal web server",
   "main": "index.js",
   "dependencies": {
+    "aws-sdk": "^2.683.0",
     "express": "^4.17.1"
   },
   "devDependencies": {},

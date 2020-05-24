@@ -1,15 +1,27 @@
+const AWS = require('aws-sdk');
 const express = require("express");
 const path = require("path");
-
-function announceTime(clock) {
-  clock = clock || Date
-  return 'It is now ' + clock.now()
-}
+const s3 = new AWS.S3();
 
 const app = express();
 
-// Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
+const s3_params = {
+	Bucket: 'johnbarboza-www'
+};
+
+app.get('/', function(req, res) {
+	var stream = s3.getObject({ ...s3_params, Key: 'public/index.html' }).createReadStream();
+
+	// Listen for errors returned by the service
+	stream.on('error', function(err) {
+		console.error(err);
+		stream.end();
+	});
+
+	stream.pipe(res);
+});
+
+app.use('/resume', require('./resume'));
 
 // Set port
 const PORT = process.env.PORT || 80;
